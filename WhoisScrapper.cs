@@ -29,6 +29,19 @@ namespace whois_scrapper
                     FilesControl.writeToFile(newLine);
                     finalLines.Add(newLine);
                 }
+
+                //Scrap HTML pages
+                if (true)
+                {
+                    List<String> htmlEmails = Crawler.scrapePage(domain);
+                    foreach (String email in htmlEmails)
+                    {
+                        String newLine = domain + ":" + email;
+                        FilesControl.writeToFile(newLine);
+                        finalLines.Add(newLine);
+                    }
+                }
+
             });
         }
     }
