@@ -9,6 +9,7 @@ namespace whois_scrapper
 {
     public class FilesControl
     {
+        private static Object fileLock = new Object();
         public static bool writeToFile(string line)
         {
             //Use actual executable path
@@ -20,10 +21,13 @@ namespace whois_scrapper
                 StreamWriter sw = File.CreateText(path);
             }
 
-            //Write lines on the file
-            using (StreamWriter sw = File.AppendText(path))
+            lock (fileLock)
             {
-                sw.WriteLine(line);
+                //Write lines on the file
+                using (StreamWriter sw = File.AppendText(path))
+                {            
+                    sw.WriteLine(line);
+                }        
             }
 
             return true;

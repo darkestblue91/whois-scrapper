@@ -28,8 +28,8 @@ namespace whois_scrapper
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             String domain = txtDomain.Text;
-            String finalResult = WhoisScrapper.StartScrap(domain);
-            txtWhois.Text = finalResult;
+            WhoisScrapper.StartScrap(domain);
+            //txtWhois.Text = finalResult;
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)

@@ -65,6 +65,8 @@ namespace whois_scrapper
                 emails.Add(emailMatch.Value);
             }
 
+            emails = emails.Distinct().ToList();
+
             return emails;
         }
 
