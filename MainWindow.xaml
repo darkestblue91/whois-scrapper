@@ -5,13 +5,19 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:whois_scrapper"
         mc:Ignorable="d"
-        Title="MainWindow" Height="465.426" Width="525">
-    <Grid Margin="0,0,13,-1">
-        <Button Content="Whois" HorizontalAlignment="Left" Margin="419,401,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.403,0.682" Click="Button_Click"/>
-        <TextBox x:Name="txtDomain" HorizontalAlignment="Left" Height="23" Margin="108,402,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="219"/>
-        <TextBlock x:Name="txtWhois" HorizontalAlignment="Left" Margin="10,10,0,39" TextWrapping="Wrap" Text="TextBlock" Width="484"/>
-        <Button x:Name="btnSelectFile" Content="Select file..." HorizontalAlignment="Left" Margin="10,405,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_1"/>
-        <CheckBox Content="CheckBox" HorizontalAlignment="Left" Margin="332,406,0,0" VerticalAlignment="Top"/>
+        Title="Domain Whois &amp; HTML Emails Scrapper" Height="467.426" Width="528" ResizeMode="NoResize">
+    <Grid Margin="0,0,2,0">
+        <Button x:Name="btnScrap" Content="Scrap" HorizontalAlignment="Left" Margin="430,406,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.403,0.682" Click="Button_Click" IsEnabled="False"/>
+        <TextBox x:Name="txtDomain" HorizontalAlignment="Left" Height="23" Margin="109,404,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="219" IsEnabled="False"/>
+        <TextBlock x:Name="txtWhois" HorizontalAlignment="Left" Margin="10,32,0,141" TextWrapping="Wrap" Width="495"><Run Text="Select a file to start scrap."/></TextBlock>
+        <Button x:Name="btnSelectFile" Content="Select file..." HorizontalAlignment="Left" Margin="10,406,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_1" RenderTransformOrigin="0.5,0.5"/>
+        <CheckBox x:Name="chkMode" Content="Only Whois" HorizontalAlignment="Left" Margin="339,409,0,0" VerticalAlignment="Top" Checked="CheckBox_Checked"/>
+        <Separator HorizontalAlignment="Left" Height="7" Margin="10,392,0,0" VerticalAlignment="Top" Width="495"/>
+        <Button x:Name="btnSetProxy" Content="Proxy file..." HorizontalAlignment="Left" Margin="10,367,0,0" VerticalAlignment="Top" Width="75" IsCancel="True" Click="btnSetProxy_Click"/>
+        <TextBox x:Name="txtProxy" HorizontalAlignment="Left" Height="23" Margin="109,365,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="219" IsEnabled="False"/>
+        <Separator HorizontalAlignment="Left" Height="7" Margin="10,353,0,0" VerticalAlignment="Top" Width="495"/>
+        <ProgressBar x:Name="progressBar" HorizontalAlignment="Left" Height="25" Margin="10,323,0,0" VerticalAlignment="Top" Width="495"/>
+        <Label x:Name="labelDomains" Content="0" HorizontalAlignment="Left" Margin="245,323,0,0" VerticalAlignment="Top" Width="83"/>
 
     </Grid>
 </Window>

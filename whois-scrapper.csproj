@@ -43,6 +43,9 @@
     <Reference Include="SimpleBrowser.WebDriver, Version=0.5.37.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SimpleBrowser.WebDriver.0.5.37\lib\net40\SimpleBrowser.WebDriver.dll</HintPath>
     </Reference>
+    <Reference Include="starksoft.aspen, Version=1.1.0.0, Culture=neutral, PublicKeyToken=56b8923a24d03eb3, processorArchitecture=MSIL">
+      <HintPath>..\packages\starksoft.aspen.1.1.0\lib\net40\starksoft.aspen.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -73,8 +76,11 @@
     <Compile Include="Crawler.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="FilesControl.cs" />
+    <Compile Include="Proxies.cs" />
+    <Compile Include="Proxy.cs" />
     <Compile Include="WebScrapper.cs" />
     <Compile Include="whois.cs" />
+    <Compile Include="WhoisServers.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -113,10 +119,12 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="WhoisScrapper.cs" />
+    <Compile Include="Scrapper.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
