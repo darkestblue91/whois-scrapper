@@ -21,12 +21,12 @@ namespace whois_scrapper
 
         public static int MAX_SUPPORTED_DOP = 512;
 
-        public static void ForAllInApproximateOrder<TSource>(this ParallelQuery<TSource> source, Action<TSource> action)
+        public static void ForAllInApproximateOrder<TSource>(this ParallelQuery<TSource> source, int threadsNumber, Action<TSource> action)
         {
             Partitioner.Create(source)
                         .AsParallel()
                         .AsOrdered()
-                        .WithDegreeOfParallelism(Math.Min(Environment.ProcessorCount, MAX_SUPPORTED_DOP))
+                        .WithDegreeOfParallelism(threadsNumber)
                         .ForAll(e => action(e));
         }
     }

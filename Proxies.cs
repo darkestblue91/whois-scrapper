@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 /*
 
@@ -24,29 +25,31 @@ namespace whois_scrapper
         //Store a list of proxies
         public static List<Proxy> proxies;
 
-        //Object to lock proxies list for only one thread
-        static Object locker = new Object();
-
         //Get one random proxy from the list to connect to a Whois server
         public static Proxy getRandomProxy()
         {
-            Proxy proxy;
-
-            lock(locker)
-            {
-                //Look for a proxy alive and not used
-                if(proxies.Any(p => p.isAlive == true && p.beingUsed == false))
-                {
-                    proxy = proxies.Find(x => x.isAlive == true && x.beingUsed == false);
-                    proxy.beingUsed = true;
-                }
-                else
-                {
-                    proxy = proxies.ElementAt(0);
-                }
-            }
-
-            return proxy;
+            Random random = new Random();
+            int pos = random.Next(proxies.Count -1);
+            return proxies[pos];
         }
+
+        public static void loadProxies(String proxyFile)
+        {
+            proxies = new List<Proxy>();
+            StreamReader reader = new StreamReader(proxyFile);
+            String proxyLine;
+
+            //Iterate proxy files line by line, add to the List<Proxy>
+            while ((proxyLine = reader.ReadLine()) != null)
+            {
+                String[] result = proxyLine.Split(new char[] { ':' });
+                Proxy proxy = new Proxy()
+                {
+                    proxyUrl = result[0],
+                    port = Int32.Parse(result[1])
+                };
+                proxies.Add(proxy);
+            }
+        } 
     }
 }

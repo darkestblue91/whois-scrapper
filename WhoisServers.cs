@@ -47,10 +47,10 @@ namespace whois_scrapper
             switch(domainTld)
             {
                 case ".com":
-                    whoisServer = "whois.godaddy.com";
+                    whoisServer = "whois.crsnic.net";
                     break;
                 case ".net":
-                    whoisServer = "dns.nic.it";
+                    whoisServer = "whois.crsnic.net";
                     break;
                 case ".org":
                     whoisServer = "whois.pir.org";
@@ -72,7 +72,7 @@ namespace whois_scrapper
                 if (Uri.IsWellFormedUriString(uncleanDomain, UriKind.Absolute))
                 {
                     Uri uri = new Uri(uncleanDomain);
-                    return uri.Host;
+                    return getTld(uri);
                 }
                 else  //If it is just a DNS domain
                 {
@@ -88,13 +88,27 @@ namespace whois_scrapper
                         return null;
                     }
                     
-                }
-                            
+                }                            
             }
             catch (UriFormatException e)
             {
                 return null;
             }      
+        }
+
+        private static String getTld(Uri uri)
+        {
+            //Part the Uri.Host in parts by .
+            var parts = uri.Host.Split('.');
+
+            if(parts == null || parts.Length == 2)
+                return parts[0] + "." + parts[1];
+
+            //If it is a domain of three parts
+            if (parts == null || parts.Length != 3)
+                return null;
+
+            return parts[1] + "." + parts[2];
         }
     }
 }

@@ -8,16 +8,26 @@
         Title="Domain Whois &amp; HTML Emails Scrapper" Height="467.426" Width="528" ResizeMode="NoResize">
     <Grid Margin="0,0,2,0">
         <Button x:Name="btnScrap" Content="Scrap" HorizontalAlignment="Left" Margin="430,406,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.403,0.682" Click="Button_Click" IsEnabled="False"/>
-        <TextBox x:Name="txtDomain" HorizontalAlignment="Left" Height="23" Margin="109,404,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="219" IsEnabled="False"/>
-        <TextBlock x:Name="txtWhois" HorizontalAlignment="Left" Margin="10,32,0,141" TextWrapping="Wrap" Width="495"><Run Text="Select a file to start scrap."/></TextBlock>
+        <TextBox x:Name="txtDomain" HorizontalAlignment="Left" Height="23" Margin="109,404,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="140" IsEnabled="False"/>
+        <TextBlock x:Name="txtWhois" HorizontalAlignment="Left" Margin="10,32,0,189" TextWrapping="Wrap" Width="495"><Run Text="Select a file to start scrap."/><LineBreak/><Run/><LineBreak/><Run Text="Proxies format:"/><LineBreak/><Run Text="ip:port"/><LineBreak/><Run/><LineBreak/><Run Text="Domains format:"/><LineBreak/><Run Text="http://example.com/"/><LineBreak/><Run Text="http://www.example.com/"/><LineBreak/><Run Text="www.example.com"/><LineBreak/><Run Text="example.com"/></TextBlock>
         <Button x:Name="btnSelectFile" Content="Select file..." HorizontalAlignment="Left" Margin="10,406,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_1" RenderTransformOrigin="0.5,0.5"/>
-        <CheckBox x:Name="chkMode" Content="Only Whois" HorizontalAlignment="Left" Margin="339,409,0,0" VerticalAlignment="Top" Checked="CheckBox_Checked"/>
+        <CheckBox x:Name="chkWHOIS" Content="WHOIS" HorizontalAlignment="Left" Margin="27,332,0,0" VerticalAlignment="Top"/>
         <Separator HorizontalAlignment="Left" Height="7" Margin="10,392,0,0" VerticalAlignment="Top" Width="495"/>
         <Button x:Name="btnSetProxy" Content="Proxy file..." HorizontalAlignment="Left" Margin="10,367,0,0" VerticalAlignment="Top" Width="75" IsCancel="True" Click="btnSetProxy_Click"/>
-        <TextBox x:Name="txtProxy" HorizontalAlignment="Left" Height="23" Margin="109,365,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="219" IsEnabled="False"/>
+        <TextBox x:Name="txtProxy" HorizontalAlignment="Left" Height="23" Margin="109,365,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="140" IsEnabled="False"/>
         <Separator HorizontalAlignment="Left" Height="7" Margin="10,353,0,0" VerticalAlignment="Top" Width="495"/>
-        <ProgressBar x:Name="progressBar" HorizontalAlignment="Left" Height="25" Margin="10,323,0,0" VerticalAlignment="Top" Width="495"/>
-        <Label x:Name="labelDomains" Content="0" HorizontalAlignment="Left" Margin="245,323,0,0" VerticalAlignment="Top" Width="83"/>
+        <ProgressBar x:Name="progressBar" HorizontalAlignment="Left" Height="25" Margin="10,285,0,0" VerticalAlignment="Top" Width="495"/>
+        <Label x:Name="labelDomains" Content="0" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Margin="10,285,15,0" VerticalAlignment="Top" Width="495"/>
+        <Label x:Name="lblT" Content="0 threads running" HorizontalAlignment="Left" HorizontalContentAlignment="Center" Margin="339,254,0,0" VerticalAlignment="Top" Width="166"/>
+        <Separator HorizontalAlignment="Left" Height="7" Margin="10,319,0,0" VerticalAlignment="Top" Width="495"/>
+        <Label x:Name="lblThreadsTitle" Content="Nº Threads" HorizontalAlignment="Left" Margin="339,363,0,0" VerticalAlignment="Top" RenderTransformOrigin="1.13,2"/>
+        <TextBox x:Name="txtThreads" PreviewTextInput="NumberValidationTextBox" HorizontalAlignment="Left" Height="23" Margin="413,365,0,0" TextWrapping="Wrap" Text="500" VerticalAlignment="Top" Width="92"/>
+        <TextBox x:Name="txtLevels"  PreviewTextInput="NumberValidationTextBox" HorizontalAlignment="Left" Height="23" Margin="252,329,0,0" TextWrapping="Wrap" Text="3" VerticalAlignment="Top" Width="92" SpellCheck.IsEnabled="True"/>
+        <Label x:Name="lblLevels" Content="Nº levels" HorizontalAlignment="Left" Margin="189,326,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.053,-0.192" Width="60"/>
+        <TextBox x:Name="txtPages" PreviewTextInput="NumberValidationTextBox" HorizontalAlignment="Left" Height="23" Margin="413,328,0,0" TextWrapping="Wrap" Text="100" VerticalAlignment="Top" Width="92"/>
+        <Label Content="Nº pages" HorizontalAlignment="Left" Margin="349,325,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="chkWeb" Content="Web" HorizontalAlignment="Left" Margin="109,332,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="chkCleaned" Content="Save cleaned domains" HorizontalAlignment="Left" Margin="272,409,0,0" VerticalAlignment="Top" Checked="chkCleaned_Checked" Unchecked="chkCleaned_Unchecked"/>
 
     </Grid>
 </Window>

@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Net.Sockets;
 using System.Net;
-using Starksoft.Aspen.Proxy;
 
 namespace whois_scrapper
 {
@@ -15,49 +14,144 @@ namespace whois_scrapper
     {
         private const int port = 43;
         private const string recordType = "domain";
-
+        public static bool doWhois = true; //Do whois process
+        public static bool doWeb = true; //Do web scrapping process
         //Regex email match
         private static Regex emailRegex = new Regex(@"\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*", RegexOptions.IgnoreCase);
+        private static Regex whoisRegex = new Regex(@"(whois).(([a-zA-Z0-9-_]{2,})\.){0,4}([a-zA-Z0-9-]{2,}\.[a-zA-Z0-9-]{2,})", RegexOptions.IgnoreCase);
 
-        //Ask to one Whois server about the domain
-        public static List<String> Lookup(string domainName)
+        public static String askToWhois(String cleanedDomain, String whoisServer)
         {
+            int index = -1;
+            String data2 = String.Empty;
 
-            Proxy proxyToUse = Proxies.getRandomProxy();
-            String[] result = proxyToUse.proxyUrl.Split(new char[] { ':' });
-
-            Socks5ProxyClient proxy = new Socks5ProxyClient();
-            proxy.ProxyHost = result[0];
-            proxy.ProxyPort = Int32.Parse(result[1]);
-            proxy.ProxyUserName = "darkestblue91";
-            proxy.ProxyPassword = "Np5@t6FE3dghqNc_";
-
-            //Clean domain URL
-            String cleanedDomain = WhoisServers.cleanDomain(domainName);
-
-            TcpClient client = proxy.CreateConnection(WhoisServers.getWhoisServer(domainName), 43);
-
-            //string domainQuery = recordType + " " + domainName + " \r\n";
-            string domainQuery = domainName + " \r\n";
-            byte[] sendBuf = System.Text.ASCIIEncoding.ASCII.GetBytes(domainQuery.ToCharArray());
-            client.GetStream().Write(sendBuf, 0, sendBuf.Length);
-            StreamReader whoisStreamReader = new StreamReader(client.GetStream(), Encoding.ASCII);
-
-            String streamOutputContent = "";
-
-            List<string> whoisData = new List<string>();
-
-            while (null != (streamOutputContent = whoisStreamReader.ReadLine()))
+            //Max tries 5 times
+            int i = 0;
+            while (i < 5)
             {
-                whoisData.Add(streamOutputContent);
+
+                //Get random proxy IP:PORT
+                Proxy proxyToUse = Proxies.getRandomProxy();
+
+                Socket client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                client.SendTimeout = 5000;
+                client.ReceiveTimeout = 6000;
+
+                try
+                {
+
+                    client.Connect(proxyToUse.proxyUrl, proxyToUse.port);
+                    //Create establish connection message
+                    string proxyMsg = "CONNECT " + whoisServer + ":" + 43 + " HTTP/1.1 \n\n";
+                    byte[] establishSend= Encoding.ASCII.GetBytes(proxyMsg);
+                    byte[] establishRev = new byte[500];
+
+                    //Send establish message
+                    client.Send(establishSend, establishSend.Length, 0);
+
+                    //Receive data
+                    int intMessage = client.Receive(establishRev, establishRev.Length, SocketFlags.None);
+                    string data = Encoding.ASCII.GetString(establishRev);
+
+                    //If GET 200 OK ask for domain whois info
+                    index = data.IndexOf("200");
+
+                    if (index != -1)
+                    {
+                        //Get domain Whois data
+                        string domainQuery = cleanedDomain + "\r\n";
+                        byte[] whoisSend = Encoding.ASCII.GetBytes(domainQuery);
+                        byte[] whoisRev = new byte[256];
+                        client.Send(whoisSend, whoisSend.Length, 0);
+
+                        bool x = true;
+                        int j;
+                        int bytesReceived = 0;
+
+                        while (x)
+                        {
+                            j = client.Receive(whoisRev, whoisRev.Length, SocketFlags.None);
+
+                            if(j > 0)
+                            {
+                                bytesReceived += j;
+                                data2 += Encoding.ASCII.GetString(whoisRev);
+                                i = 5;
+                            }
+                            else
+                            {
+                                x = false;
+                            }        
+                        }
+                    }
+                    else
+                    {
+                        i++;
+                    }
+
+                }
+                catch (SocketException e)
+                {
+                    i++;
+                }
+                finally
+                {
+                    if(client.Connected)
+                    {
+                        client.Shutdown(SocketShutdown.Both);
+                        client.Close();
+                    }              
+                }
+
             }
 
-            client.Close();
+            return data2;
+        }
 
-            String dataAsString = String.Join(Environment.NewLine, whoisData);
-            List<String> emailList = ExtractEmails(dataAsString);
+        public static List<String> Lookup(String cleanedDomain)
+        {
+            List<String> emailList = new List<String>();
+
+            if(cleanedDomain != null)
+            {
+                //Do Whois process
+                if(doWhois)
+                {
+                    //Get appropiate WHOIS server for the domain
+                    String whoisServer = WhoisServers.getWhoisServer(cleanedDomain);
+
+                    //Ask to the WHOIS server about domain
+                    String data = askToWhois(cleanedDomain, whoisServer);
+
+                    //If the domains are .com or net
+                    if (whoisServer == "whois.crsnic.net")
+                    {
+                        String comNetWhoisServer = extractWhoisServer(data);
+                        data = askToWhois(cleanedDomain, comNetWhoisServer);
+                        //Extact emails from the data 
+                        emailList = ExtractEmails(data);
+                    }
+                }
+
+                //Do web scrap process
+                if (doWeb)
+                {
+                    Crawler crawler = new Crawler(cleanedDomain);
+                    List<String> crawEmails = crawler.scrapWeb();
+                    emailList = emailList.Concat(crawEmails).Distinct().ToList();
+                }
+            }
 
             return emailList;
+        }
+
+        //Extact WHOIS server from a List<String> of a WHOIS Response
+        private static String extractWhoisServer(string data)
+        {
+            //Look for WHOIS servers in the string
+            Match match = whoisRegex.Match(data);
+
+            return match.Value;
         }
 
         //Receives a string and return a List<String> with the emails

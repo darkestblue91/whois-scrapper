@@ -20,25 +20,73 @@ namespace whois_scrapper
     {
         //Variable to lock access to only one thread
         private static Object fileLock = new Object();
+        private static String filePath;
+        public static String fileName = "\\whoisOutput.txt";
 
         //Write line to output file
         public static bool writeToFile(string line)
         {
             //Use actual executable path
-            string path = AppDomain.CurrentDomain.BaseDirectory + "\\whoisOutput.txt";
+            filePath = AppDomain.CurrentDomain.BaseDirectory + fileName;
+            bool notSaved = true;
 
-            lock (fileLock)
+            while(notSaved)
             {
-                //Create of use actual file
-                if (!File.Exists(path))
+                try
                 {
-                    StreamWriter sw = File.CreateText(path);
-                }
+                    lock (fileLock)
+                    {
+                        //Create of use actual file
+                        if (!File.Exists(filePath))
+                        {
+                            StreamWriter sw = File.CreateText(filePath);
+                        }
 
-                //Write lines on the file
-                using (StreamWriter sw = File.AppendText(path))
-                {            
-                    sw.WriteLine(line);
+                        //Write lines on the file
+                        using (StreamWriter sw = File.AppendText(filePath))
+                        {
+                            sw.WriteLine(line);
+                            notSaved = false;
+                        }
+                    }
+                }
+                catch (IOException e)
+                {
+                    notSaved = true;
+                }
+            }
+
+            return true;
+        }
+
+        public static bool writeText(String text)
+        {
+            filePath = AppDomain.CurrentDomain.BaseDirectory + "\\whoisOutput.txt";
+            bool notSaved = true;
+
+            while (notSaved)
+            {
+                try
+                {
+                    lock (fileLock)
+                    {
+                        //Create of use actual file
+                        if (!File.Exists(filePath))
+                        {
+                            StreamWriter sw = File.CreateText(filePath);
+                        }
+
+                        //Write lines on the file
+                        using (StreamWriter sw = File.AppendText(filePath))
+                        {
+                            sw.Write(text);
+                            notSaved = false;
+                        }
+                    }
+                }
+                catch (IOException e)
+                {
+                    notSaved = true;
                 }
             }
 
